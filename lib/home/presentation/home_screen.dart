@@ -1,3 +1,4 @@
+import 'package:app_weight/weight/presentation/widgets/card_person.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,6 +18,6 @@ class _HomeScreenView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return CardPerson();
   }
 }

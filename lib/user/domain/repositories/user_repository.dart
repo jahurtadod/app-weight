@@ -1,7 +1,7 @@
 import 'package:app_weight/user/domain/entities/user.dart';
 
 abstract class UserRepository {
-  Stream<User?> authenticationUser();
+  Future<User?> authenticationUser(String email);
   Stream<User?> getUserById(String id);
-  Stream<User?> closeUse();
+  Stream<User?> closeUser();
 }

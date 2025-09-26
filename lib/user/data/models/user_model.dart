@@ -28,12 +28,12 @@ class UserModel extends User {
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     // TODO: En caso de ser nulo que va hacer ?
-    id: json["id"],
-    name: json["name"],
-    lastName: json["lastName"],
-    email: json["email"],
-    phoneNumber: json["phoneNumber"],
-    role: json["role"],
+      id: json["id"],
+      name: json["name"],
+      lastName: json["lastName"],
+      email: json["email"],
+      phoneNumber: json["phoneNumber"],
+      role: json["role"],
   );
 
   Map<String, dynamic> toJson() => {

@@ -1,3 +1,4 @@
+import 'package:app_weight/user/presentation/widgets/icon_auth.dart';
 import 'package:app_weight/weight/presentation/widgets/card_person.dart';
 import 'package:app_weight/weight/presentation/widgets/grid_weights.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('VERSUS')),
+      appBar: AppBar(title: const Text('VERSUS'), actions: [IconAuth()]),
       body: _HomeScreenView(),
     );
   }

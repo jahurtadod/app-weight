@@ -11,7 +11,7 @@ class AppTheme {
     useMaterial3: true,
     colorSchemeSeed: seedColor,
     brightness: isDarkmode ? Brightness.dark : Brightness.light,
-    scaffoldBackgroundColor: const Color(0xFF0F0F0F),
+    // scaffoldBackgroundColor: const Color(0xFF0F0F0F),
 
     listTileTheme: const ListTileThemeData(iconColor: seedColor),
   );

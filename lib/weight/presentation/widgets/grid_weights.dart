@@ -1,5 +1,6 @@
 import 'package:app_weight/config/widgets/icon_card.dart';
 import 'package:app_weight/weight/domain/services/weight_trend_service.dart';
+import 'package:app_weight/weight/presentation/providers/person_providers.dart';
 import 'package:app_weight/weight/presentation/providers/weights_providers.dart';
 import 'package:app_weight/weight/presentation/widgets/card_weigths.dart';
 import 'package:flutter/material.dart';
@@ -13,35 +14,49 @@ class GridWeights extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weights = ref.watch(watchWeightsByPersonProvider(personId, limit));
+    final person = ref.watch(watchPersonByIdProvider(personId));
 
-    return weights.when(
-      data: (weights) {
-        if (weights!.isEmpty) {
-          return const CardWeightError();
-        }
-        return GridView.builder(
-          shrinkWrap: true,
-          primary: false,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1,
-            mainAxisExtent: 60,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-          ),
-          itemCount: weights.length,
-          itemBuilder: (context, index) {
-            final weight = weights[index];
-        
-            final trend = trendFor(105.8, weight.weight);
-            final icon = iconForTrend(trend);
-            final color = colorForTrend(trend);
-        
-            return CardWeigth(weight: weight, icon: icon, color: color);
+    return person.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (e, _) => Text('Error persona: $e'),
+      data: (person) {
+        if (person == null) return const CardWeightError();
+
+        return weights.when(
+          data: (weights) {
+            if (weights!.isEmpty) {
+              return const CardWeightError();
+            }
+            return GridView.builder(
+              shrinkWrap: true,
+              primary: false,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 1,
+                mainAxisExtent: 60,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: weights.length,
+              itemBuilder: (context, index) {
+                final weight = weights[index];
+
+                final trend = (index == weights.length - 1)
+                    ? trendFor(
+                        person.initialWeight,
+                        weight.weight,
+                      )
+                    : trendFor(weights[index + 1].weight, weight.weight);
+                final icon = iconForTrend(trend);
+                final color = colorForTrend(trend);
+
+                return CardWeigth(weight: weight, icon: icon, color: color);
+              },
+            );
           },
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, stack) => Center(child: Text('Error: $error')),
         );
       },
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (error, stack) => Center(child: Text('Error: $error')),
     );
   }
 }
@@ -84,7 +99,7 @@ IconData iconForTrend(Trend t) => switch (t) {
 };
 
 Color colorForTrend(Trend t) => switch (t) {
-  Trend.up => Colors.greenAccent,
-  Trend.down => Colors.redAccent,
+  Trend.up => Colors.redAccent,
+  Trend.down => Colors.greenAccent,
   Trend.flat => Colors.amberAccent,
 };

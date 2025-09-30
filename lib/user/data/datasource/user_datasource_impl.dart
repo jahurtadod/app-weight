@@ -1,33 +1,65 @@
 import 'package:app_weight/user/data/datasource/user_datasource.dart';
 import 'package:app_weight/user/data/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:app_weight/user/domain/entities/user.dart';
 
 class UserDatasourceImpl extends UserDatasource {
-  UserDatasourceImpl(this._firestore);
+  UserDatasourceImpl(this._firestore, this._auth);
+
   final FirebaseFirestore _firestore;
+  final fb.FirebaseAuth _auth;
 
   @override
-  Future<UserModel?> authenticationUser(String email) async {
-    final query = await _firestore
-        .collection('users')
-        .where('email', isEqualTo: email)
-        .get();
+  Stream<String?> authStateChanges() =>
+      _auth.authStateChanges().map((u) => u?.uid);
 
-    if (query.docs.isEmpty) return null;
+  @override
+  Future<UserModel?> signInWithGoogle() async {
+    // Web: popup
+    final provider = fb.GoogleAuthProvider();
+    final cred = await _auth.signInWithPopup(provider);
 
-    final doc = query.docs.first;
-    final data = doc.data();
+    final fbUser = cred.user;
+    if (fbUser == null) return null;
 
-    return UserModel.fromJson({"id": doc.id, ...data});
+    final uid = fbUser.uid;
+    final docRef = _firestore.collection('users').doc(uid);
+    final snap = await docRef.get();
+
+    if (!snap.exists) {
+      // Primer login: Crea perfil base en la coleccion 'users'
+      final model = UserModel(
+        id: uid,
+        name: fbUser.displayName?.split(' ').firstOrNull ?? '',
+        lastName: fbUser.displayName?.split(' ').skip(1).join(' ') ?? '',
+        email: fbUser.email ?? '',
+        phoneNumber: fbUser.phoneNumber ?? '',
+        role: ROL.user,
+      );
+      await docRef.set(model.toJson());
+      return model;
+    }
+    final data = snap.data()!;
+    return UserModel.fromJson({"id": uid, ...data});
   }
 
   @override
-  Stream<UserModel?> closeUser() {
-    throw UnimplementedError();
+  Future<void> signOut() async {
+    await _auth.signOut();
   }
 
   @override
   Stream<UserModel?> getUserById(String id) {
-    throw UnimplementedError();
+    return _firestore.collection('users').doc(id).snapshots().map((snap) {
+      if (!snap.exists) return null;
+      final data = snap.data()!;
+      return UserModel.fromJson({"id": snap.id, ...data});
+    });
   }
+}
+
+// name: fbUser.displayName?.split(' ').firstOrNull ?? '', Si el nombre esta vacio devuelve '' en ves de null
+extension<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
 }

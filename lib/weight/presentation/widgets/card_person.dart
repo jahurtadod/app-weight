@@ -65,7 +65,7 @@ class CardPerson extends ConsumerWidget {
                     ),
                     Text('${person.likes}'),
                     const SizedBox(width: 8),
-                    Icon(Icons.favorite_border),
+                    Icon(Icons.favorite_border), // TODO extraer widget Favotite / Hacerlo un provider/ Icon en weight o user ?
                   ],
                 ),
               ],

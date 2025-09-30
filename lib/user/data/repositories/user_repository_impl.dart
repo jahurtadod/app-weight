@@ -7,20 +7,26 @@ class UserRepositoryImpl extends UserRepository {
   UserRepositoryImpl(this._userDatasource);
 
   @override
-  Future<User?> authenticationUser(String email) async {
-    final userModel = await _userDatasource.authenticationUser(email);
-    return userModel?.toEntity();
+  Stream<String?> authStateChanges() {
+    return _userDatasource.authStateChanges();
   }
 
   @override
-  Stream<User?> closeUser() {
-    // TODO: implement closeUse
-    throw UnimplementedError();
+  Future<User> signInWithGoogle() async {
+    final m = await _userDatasource.signInWithGoogle();
+    if (m == null) {
+      throw Exception('No se pudo iniciar sesión con Google');
+    }
+    return m.toEntity();
+  }
+
+  @override
+  Future<void> signOut() {
+    return _userDatasource.signOut();
   }
 
   @override
   Stream<User?> getUserById(String id) {
-    // TODO: implement getUserById
-    throw UnimplementedError();
+    return _userDatasource.getUserById(id).map((m) => m?.toEntity());
   }
 }

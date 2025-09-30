@@ -11,7 +11,8 @@ part 'user_provider.g.dart';
 @riverpod
 UserDatasource userRemoteDataSource(Ref ref) {
   final db = ref.watch(firestoreProvider);
-  return UserDatasourceImpl(db);
+  final auth = ref.watch(firebaseAuthProvider);
+  return UserDatasourceImpl(db, auth);
 }
 
 @riverpod
@@ -20,10 +21,61 @@ UserRepository userReporitory(Ref ref) {
   return UserRepositoryImpl(dataSource);
 }
 
+// Riverpod de la autenticacion
+// UID actual o null
 @riverpod
-Future<User?> userByEmailAuthentication(Ref ref, String email) async {
+Stream<String?> authUid(Ref ref) {
   final repository = ref.watch(userReporitoryProvider);
-  return repository.authenticationUser(email);
+  return repository.authStateChanges();
+}
+
+// Iniciar con Google
+@riverpod
+Future<User?> signInWithGoogle(Ref ref) async {
+  final repository = ref.watch(userReporitoryProvider);
+  return repository.signInWithGoogle();
+}
+
+// Cerrar sesión
+@riverpod
+Future<void> signOut(Ref ref) async {
+  final repository = ref.watch(userReporitoryProvider);
+  return repository.signOut();
+}
+
+// Traer usuario
+@riverpod
+Stream<User?> currentUser(Ref ref) {
+  // final repository = ref.watch(userReporitoryProvider);
+  // return repository.authStateChanges().asyncExpand((uid) {
+  //   if (uid == null) return Stream.value(null);
+  //   return repository.getUserById(uid);
+  // });
+  // 1) Observa el UID (AsyncValue<String?>)
+  final uidAsync = ref.watch(authUidProvider);
+
+  // 2) Según su estado, devuelve el stream correspondiente
+  return uidAsync.when(
+    data: (uid) {
+      if (uid == null) return Stream.value(null);
+      final repo = ref.read(
+        userReporitoryProvider,
+      ); // (mejor: userRepositoryProvider)
+      return repo.getUserById(uid);
+    },
+    loading: () => const Stream.empty(),
+    error: (_, __) => Stream.value(null),
+  );
+}
+
+@riverpod
+AsyncValue<String> currentUserFullName(Ref ref) {
+  final asyncUser = ref.watch(currentUserProvider);
+  return asyncUser.whenData((u) {
+    if (u == null) return 'Invitado';
+    final full = '${u.name} ${u.lastName}'.trim();
+    return full.isEmpty ? u.email : full;
+  });
 }
 
 // TODO Metodo del metodo de autentificacion

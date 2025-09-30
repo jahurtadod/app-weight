@@ -10,12 +10,6 @@ UserModel welcomeFromJson(String str) => UserModel.fromJson(json.decode(str));
 String welcomeToJson(UserModel data) => json.encode(data.toJson());
 
 class UserModel extends User {
-  // final String id;
-  // final String name;
-  // final String lastName;
-  // final String email;
-  // final String phoneNumber;
-  // final String role;
 
   UserModel({
     required super.id,
@@ -28,12 +22,12 @@ class UserModel extends User {
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     // TODO: En caso de ser nulo que va hacer ?
-      id: json["id"],
-      name: json["name"],
-      lastName: json["lastName"],
-      email: json["email"],
-      phoneNumber: json["phoneNumber"],
-      role: json["role"],
+    id: json["id"],
+    name: json["name"],
+    lastName: json["lastName"],
+    email: json["email"],
+    phoneNumber: json["phoneNumber"],
+    role: ROL.values.byName(json["role"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -42,7 +36,7 @@ class UserModel extends User {
     "lastName": lastName,
     "email": email,
     "phoneNumber": phoneNumber,
-    "role": role,
+    "role": role.name,
   };
 
   toEntity() {

@@ -5,7 +5,7 @@ import 'package:app_weight/user/data/repositories/user_repository_impl.dart';
 import 'package:app_weight/user/domain/entities/user.dart';
 import 'package:app_weight/user/domain/repositories/user_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
- 
+
 part 'user_provider.g.dart';
 
 @riverpod
@@ -15,16 +15,16 @@ UserDatasource userRemoteDataSource(Ref ref) {
 }
 
 @riverpod
-UserRepository userReporistory(Ref ref) {
+UserRepository userReporitory(Ref ref) {
   final dataSource = ref.watch(userRemoteDataSourceProvider);
   return UserRepositoryImpl(dataSource);
 }
 
-// @riverpod
-// Future<User> authenticationUser(Ref ref, String email) async{
-//   final repository = ref.watch(userRepositoryProvider);
-//   return;
-// } 
+@riverpod
+Future<User?> userByEmailAuthentication(Ref ref, String email) async {
+  final repository = ref.watch(userReporitoryProvider);
+  return repository.authenticationUser(email);
+}
 
 // TODO Metodo del metodo de autentificacion
 // LLAMAR AL REPOR E IMPLEMENTAR LA AUTENTICACION CON RIVERPOOD

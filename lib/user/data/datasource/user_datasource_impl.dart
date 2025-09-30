@@ -1,6 +1,5 @@
 import 'package:app_weight/user/data/datasource/user_datasource.dart';
 import 'package:app_weight/user/data/models/user_model.dart';
-import 'package:app_weight/user/domain/entities/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserDatasourceImpl extends UserDatasource {

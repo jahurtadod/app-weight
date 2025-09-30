@@ -17,6 +17,7 @@ class UserModel extends User {
     required super.email,
     required super.phoneNumber,
     required super.role,
+    required super.avatarUrl,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
@@ -27,6 +28,7 @@ class UserModel extends User {
     email: (json["email"] ?? "") as String,
     phoneNumber: (json["phoneNumber"] ?? "") as String,
     role: _roleFromJson(json["role"]),
+    avatarUrl: (json['avatarUrl'] ?? '') as String,
   );
 
   static ROL _roleFromJson(dynamic raw) {
@@ -44,6 +46,7 @@ class UserModel extends User {
     "email": email,
     "phoneNumber": phoneNumber,
     "role": role.name,
+    'avatarUrl': avatarUrl,
   };
 
   toEntity() {
@@ -54,6 +57,7 @@ class UserModel extends User {
       email: email,
       phoneNumber: phoneNumber,
       role: role,
+      avatarUrl: avatarUrl,
     );
   }
 }

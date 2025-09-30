@@ -5,6 +5,7 @@ class User {
   final String email;
   final String phoneNumber;
   final ROL role;
+  final String avatarUrl;
 
   User({
     required this.id,
@@ -13,6 +14,7 @@ class User {
     required this.email,
     required this.phoneNumber,
     required this.role,
+    required this.avatarUrl
   });
 }
 

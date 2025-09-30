@@ -7,7 +7,7 @@ class IconAuth extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final uidAsync = ref.watch(authUidProvider);
+    // final uidAsync = ref.watch(authUidProvider);
     final fullNameAsync = ref.watch(currentUserFullNameProvider);
 
     return Row(
@@ -55,7 +55,7 @@ class IconAuth extends ConsumerWidget {
         ),
 
         const SizedBox(width: 16),
-
+        Icon(Icons.person),
         // Estado simple (opcional)
         fullNameAsync.when(
           data: (fullName) => Text(

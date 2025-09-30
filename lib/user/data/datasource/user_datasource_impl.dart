@@ -36,6 +36,7 @@ class UserDatasourceImpl extends UserDatasource {
         email: fbUser.email ?? '',
         phoneNumber: fbUser.phoneNumber ?? '',
         role: ROL.user,
+        avatarUrl: fbUser.photoURL ?? '',
       );
       await docRef.set(model.toJson());
       return model;

@@ -271,3 +271,51 @@ final class CurrentUserFullNameProvider
 
 String _$currentUserFullNameHash() =>
     r'26e4d7d602b8264ead9efcaf580cb79a3783bc2c';
+
+@ProviderFor(currentUserAvatarUrl)
+const currentUserAvatarUrlProvider = CurrentUserAvatarUrlProvider._();
+
+final class CurrentUserAvatarUrlProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<String>,
+          AsyncValue<String>,
+          AsyncValue<String>
+        >
+    with $Provider<AsyncValue<String>> {
+  const CurrentUserAvatarUrlProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'currentUserAvatarUrlProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$currentUserAvatarUrlHash();
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<String>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  AsyncValue<String> create(Ref ref) {
+    return currentUserAvatarUrl(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AsyncValue<String>>(value),
+    );
+  }
+}
+
+String _$currentUserAvatarUrlHash() =>
+    r'89609982609a548b7756e9fd5b1da5ef7203cd8d';

@@ -26,7 +26,7 @@ class UserDatasourceImpl extends UserDatasource {
     final uid = fbUser.uid;
     final docRef = _firestore.collection('users').doc(uid);
     final snap = await docRef.get();
-
+    final fbPhoto = fbUser.photoURL ?? '';
     if (!snap.exists) {
       // Primer login: Crea perfil base en la coleccion 'users'
       final model = UserModel(
@@ -36,12 +36,16 @@ class UserDatasourceImpl extends UserDatasource {
         email: fbUser.email ?? '',
         phoneNumber: fbUser.phoneNumber ?? '',
         role: ROL.user,
-        avatarUrl: fbUser.photoURL ?? '',
+        avatarUrl: fbPhoto,
       );
       await docRef.set(model.toJson());
       return model;
     }
     final data = snap.data()!;
+    // (Opcional) si el doc no tiene avatarUrl aún, lo actualizas una sola vez:
+    if ((data['avatarUrl'] ?? '').toString().isEmpty && fbPhoto.isNotEmpty) {
+      await docRef.update({'avatarUrl': fbPhoto});
+    }
     return UserModel.fromJson({"id": uid, ...data});
   }
 

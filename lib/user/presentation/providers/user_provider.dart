@@ -78,5 +78,12 @@ AsyncValue<String> currentUserFullName(Ref ref) {
   });
 }
 
+@riverpod
+AsyncValue<String> currentUserAvatarUrl(Ref ref) {
+  final asyncUser = ref.watch(currentUserProvider);
+  return asyncUser.whenData((u) => (u?.avatarUrl ?? '').trim());
+}
+
+
 // TODO Metodo del metodo de autentificacion
 // LLAMAR AL REPOR E IMPLEMENTAR LA AUTENTICACION CON RIVERPOOD

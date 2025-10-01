@@ -1,4 +1,5 @@
 import 'package:app_weight/user/presentation/providers/user_provider.dart';
+import 'package:app_weight/user/presentation/widgets/icon_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -55,8 +56,7 @@ class IconAuth extends ConsumerWidget {
         ),
 
         const SizedBox(width: 16),
-        Icon(Icons.person),
-        // Estado simple (opcional)
+        IconAvatar(size: 28), // Icono de la persona
         fullNameAsync.when(
           data: (fullName) => Text(
             fullName,

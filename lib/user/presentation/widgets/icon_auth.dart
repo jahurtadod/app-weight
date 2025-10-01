@@ -8,70 +8,137 @@ class IconAuth extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // final uidAsync = ref.watch(authUidProvider);
-    final fullNameAsync = ref.watch(currentUserFullNameProvider);
+    final uidAsync = ref.watch(authUidProvider); // sesión
+    final fullNameAsync = ref.watch(currentUserFullNameProvider); // nombre
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Iniciar con Google
-        TextButton.icon(
-          onPressed: () async {
-            final user = await ref.read(signInWithGoogleProvider.future);
-            if (!context.mounted) return;
-            if (user != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Bienvenido ${user.name.isEmpty ? user.email : user.name}',
+    // Un poco de padding para separarlo del borde derecho del AppBar
+    return Padding(
+      padding: const EdgeInsets.only(right: 16),
+      child: uidAsync.when(
+        loading: () => const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
+        error: (_, __) =>
+            const Text('—', style: TextStyle(color: Colors.redAccent)),
+        data: (uid) {
+          // SIN SESIÓN
+          if (uid == null) {
+            return ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    Colors.grey[300], // gris claro (igual que Entrar)
+                foregroundColor: Colors.black, // ícono y texto en negro
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(
+                    8,
+                  ), // esquinas redondeadas
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+              onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final user = await ref.read(signInWithGoogleProvider.future);
+                if (!context.mounted) return;
+                messenger.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      user != null
+                          ? 'Bienvenido ${user.name.isEmpty ? user.email : user.name}'
+                          : 'No se pudo iniciar sesión',
+                    ),
+                  ),
+                );
+              },
+              child: const Text(
+                "Entrar",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black, // mejor contraste con gris claro
+                ),
+              ),
+            );
+          }
+
+          // LOGUEADO
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const IconAvatar(size: 28),
+              const SizedBox(width: 8),
+              Flexible(
+                child: fullNameAsync.when(
+                  data: (fullName) => Text(
+                    fullName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white70),
+                  ),
+                  loading: () => const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  error: (_, __) => const Text(
+                    '—',
+                    style: TextStyle(color: Colors.redAccent),
                   ),
                 ),
-              );
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('No se pudo iniciar sesión')),
-              );
-            }
-          },
-          icon: const Icon(Icons.login, color: Colors.white),
-          label: const Text('Google', style: TextStyle(color: Colors.white)),
-        ),
+              ),
+              const SizedBox(width: 12),
+              SizedBox(
+                height: 28, // alto del divisor
+                child: VerticalDivider(
+                  width: 16, // espacio horizontal ocupado
+                  thickness: 2, // grosor de la línea
+                  color: Colors.white, // ajusta a tu tema
+                ),
+              ),
+              const SizedBox(width: 12),
 
-        const SizedBox(width: 8),
-
-        // Cerrar sesión
-        TextButton.icon(
-          onPressed: () async {
-            await ref.read(signOutProvider.future);
-            if (!context.mounted) return;
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(const SnackBar(content: Text('Sesión cerrada')));
-          },
-          icon: const Icon(Icons.logout, color: Colors.white),
-          label: const Text(
-            'Cerrar sesión',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
-
-        const SizedBox(width: 16),
-        IconAvatar(size: 28), // Icono de la persona
-        fullNameAsync.when(
-          data: (fullName) => Text(
-            fullName,
-            style: const TextStyle(color: Colors.white70),
-            overflow: TextOverflow.ellipsis,
-          ),
-          loading: () => const SizedBox(
-            width: 20,
-            height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-          error: (_, __) =>
-              const Text('—', style: TextStyle(color: Colors.redAccent)),
-        ),
-      ],
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.grey[300], // gris claro (igual que Entrar)
+                  foregroundColor: Colors.black, // ícono y texto en negro
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      8,
+                    ), // esquinas redondeadas
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
+                ),
+                onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+                  await ref.read(signOutProvider.future);
+                  if (!context.mounted) return;
+                  messenger.showSnackBar(
+                    const SnackBar(content: Text('Sesión cerrada')),
+                  );
+                },
+                icon: const Icon(Icons.logout),
+                label: const Text(
+                  "Salir",
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black, // contraste con gris claro
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+            ],
+          );
+        },
+      ),
     );
   }
 }

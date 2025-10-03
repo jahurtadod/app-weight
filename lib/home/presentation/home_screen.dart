@@ -1,7 +1,4 @@
-import 'package:app_weight/user/presentation/widgets/icon_auth.dart';
 import 'package:app_weight/bet/presentation/screens/bets_screen.dart';
-import 'package:app_weight/weight/presentation/widgets/card_person.dart';
-import 'package:app_weight/weight/presentation/widgets/grid_weights.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -9,23 +6,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('VERSUS'), actions: [IconAuth()]),
-      body: _HomeScreenView(),
-    );
-  }
-}
-
-class _HomeScreenView extends StatelessWidget {
-  const _HomeScreenView();
-
-  @override
-  Widget build(BuildContext context) {
     // return Wrap(children: [CardPerson(personId: "8THRVje5cHueUkOkl2v3"), CardPerson(personId: "qAv91SfDvk22Rt4Jjvxu")]);
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: BetsScreen()
+        child: BetsScreen(),
         // Row(
         //   mainAxisAlignment: MainAxisAlignment.start,
         //   crossAxisAlignment: CrossAxisAlignment.start,

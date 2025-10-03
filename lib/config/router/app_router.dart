@@ -1,5 +1,6 @@
 import 'package:app_weight/bet/domain/entities/bet.dart';
 import 'package:app_weight/bet/presentation/screens/bet_details_screen.dart';
+import 'package:app_weight/user/presentation/widgets/icon_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_weight/ui_screens.dart';
@@ -18,24 +19,51 @@ GoRouter goRouter(Ref ref) {
     initialLocation: '/home',
     navigatorKey: _rootNavigatorKey,
     routes: [
-      GoRoute(
-        path: '/home',
-        name: AppRoute.home.name,
-        pageBuilder: (context, state) =>
-            const NoTransitionPage(child: HomeScreen()),
+      ShellRoute(
+        builder: (context, state, child) {
+          return Scaffold(
+            appBar: AppBar(title: const Text('VERSUS'), actions: [IconAuth()]),
+            body: child,
+          );
+        },
         routes: [
           GoRoute(
-        path: '/bet/:bid',
-        name: AppRoute.bet.name,
-        builder: (context, state) {
-          final bid = state.pathParameters['bid']!;
-          final bet = state.extra as Bet?; // opcional
-          return BetDetailScreen(betId: bid, bet: bet);
-        },
+            path: '/home',
+            name: AppRoute.home.name,
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: HomeScreen()),
+            routes: [
+              GoRoute(
+                path: '/bet/:bid',
+                name: AppRoute.bet.name,
+                builder: (context, state) {
+                  final bid = state.pathParameters['bid']!;
+                  final bet = state.extra as Bet?; // opcional
+                  return BetDetailScreen(betId: bid, bet: bet);
+                },
+              ),
+            ],
+          ),
+        ],
       ),
-        ]
-      ),
-      
+      // GoRoute(
+      //   path: '/home',
+      //   name: AppRoute.home.name,
+      //   pageBuilder: (context, state) =>
+      //       const NoTransitionPage(child: HomeScreen()),
+      //   routes: [
+      //     GoRoute(
+      //   path: '/bet/:bid',
+      //   name: AppRoute.bet.name,
+      //   builder: (context, state) {
+      //     final bid = state.pathParameters['bid']!;
+      //     final bet = state.extra as Bet?; // opcional
+      //     return BetDetailScreen(betId: bid, bet: bet);
+      //   },
+      // ),
+      //   ]
+      // ),
+
       // GoRoute(
       //   path: '/bet/:bid',
       //   name: AppRoute.bet.name,

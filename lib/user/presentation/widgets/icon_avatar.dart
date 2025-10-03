@@ -14,7 +14,9 @@ class IconAvatar extends ConsumerWidget {
 
     return avatarAsync.when(
       data: (url) {
+        print('Esta es la url ${url}');
         if (url.isNotEmpty) {
+          print('Dentro del if es la url ${url}');
           return CircleAvatar(
             radius: size / 2,
             backgroundImage: NetworkImage(url),

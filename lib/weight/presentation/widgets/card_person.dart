@@ -1,3 +1,5 @@
+import 'package:app_weight/user/domain/entities/like.dart';
+import 'package:app_weight/user/presentation/widgets/icon_like.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app_weight/weight/presentation/providers/person_providers.dart';
@@ -63,9 +65,14 @@ class CardPerson extends ConsumerWidget {
                         ],
                       ),
                     ),
-                    Text('${person.likes}'),
-                    const SizedBox(width: 8),
-                    Icon(Icons.favorite_border),
+                    // Text('${person.likes}'),
+                    // const SizedBox(width: 8),
+                    // Icon(
+                    IconLike(
+                      targetType: LikeTargetType.person,
+                      targetId: personId,
+                      likes: person.likes,
+                    ),
                   ],
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:app_weight/user/presentation/widgets/icon_auth.dart';
 import 'package:app_weight/bet/presentation/screens/bets_screen.dart';
 import 'package:app_weight/weight/presentation/widgets/card_person.dart';
 import 'package:app_weight/weight/presentation/widgets/grid_weights.dart';
@@ -9,7 +10,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('VERSUS')),
+      appBar: AppBar(title: const Text('VERSUS'), actions: [IconAuth()]),
       body: _HomeScreenView(),
     );
   }

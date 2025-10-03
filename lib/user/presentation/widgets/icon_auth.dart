@@ -69,7 +69,6 @@ class IconAuth extends ConsumerWidget {
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const IconAvatar(size: 28),
               const SizedBox(width: 8),
               Flexible(
                 child: fullNameAsync.when(
@@ -90,6 +89,8 @@ class IconAuth extends ConsumerWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 12),
+              IconAvatar(size: 28),
               const SizedBox(width: 12),
               SizedBox(
                 height: 28, // alto del divisor

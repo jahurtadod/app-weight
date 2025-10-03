@@ -1,11 +1,61 @@
+import 'package:app_weight/bet/domain/entities/bet.dart';
+import 'package:app_weight/bet/presentation/screens/bet_details_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:app_weight/ui_screens.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final appRouter = GoRouter(
-  routes: [
-    GoRoute(
-      path: '/',
-      builder: (context, state) => const HomeScreen(),
-    ),
-  ],
-);
+part 'app_router.g.dart';
+
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+// final _homeNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'home');
+
+enum AppRoute { home, bet, person }
+
+@riverpod
+GoRouter goRouter(Ref ref) {
+  return GoRouter(
+    initialLocation: '/home',
+    navigatorKey: _rootNavigatorKey,
+    routes: [
+      GoRoute(
+        path: '/home',
+        name: AppRoute.home.name,
+        pageBuilder: (context, state) =>
+            const NoTransitionPage(child: HomeScreen()),
+        routes: [
+          GoRoute(
+        path: '/bet/:bid',
+        name: AppRoute.bet.name,
+        builder: (context, state) {
+          final bid = state.pathParameters['bid']!;
+          final bet = state.extra as Bet?; // opcional
+          return BetDetailScreen(betId: bid, bet: bet);
+        },
+      ),
+        ]
+      ),
+      
+      // GoRoute(
+      //   path: '/bet/:bid',
+      //   name: AppRoute.bet.name,
+      //   builder: (context, state) {
+      //     final bid = state.pathParameters['bid']!;
+      //     final bet = state.extra as Bet?; // opcional
+      //     return BetDetailScreen(betId: bid, bet: bet);
+      //   },
+      // ),
+
+      // GoRoute(
+      //   path: '/bets/:id',
+      //   name: 'betDetail',
+      //   builder: (context, state) {
+      //     final betId = state.pathParameters['id'];
+      //     return BetDetailScreen(betId: betId);
+
+      //   },
+
+      // ),
+    ],
+  );
+}

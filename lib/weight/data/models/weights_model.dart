@@ -1,7 +1,7 @@
-import 'package:app_weight/weight/domain/entities/weights.dart';
+import 'package:app_weight/weight/domain/entities/weight.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class WeightsModel extends Weights {
+class WeightsModel extends Weight {
   WeightsModel({
     required super.id,
     required super.unit,

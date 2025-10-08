@@ -15,4 +15,9 @@ class BetRepositoryImpl extends BetRepository {
   Future<List<Bet>> getAllBets() {
     return _datasource.getAllBets();
   }
+  
+  @override
+  Stream<Bet> watchById(String id) {
+    return _datasource.watchById(id);
+  }
 }

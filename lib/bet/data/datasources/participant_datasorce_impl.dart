@@ -10,8 +10,8 @@ class ParticipantDatasourceImpl extends ParticipantDatasource {
       _firestore.collection('bets').doc(betId).collection('participants');
 
   @override
-  Future<List<ParticipantModel>> getAllParticipants(String betId) {
-    return _collection(betId).get().then((snapshot) {
+  Stream<List<ParticipantModel>> getAllParticipants(String betId) {
+    return _collection(betId).snapshots().map((snapshot) {
       if (snapshot.docs.isEmpty) return [];
 
       return snapshot.docs

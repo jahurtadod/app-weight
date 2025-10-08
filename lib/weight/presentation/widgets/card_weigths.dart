@@ -1,6 +1,6 @@
 import 'package:app_weight/config/widgets/icon_card.dart';
 import 'package:flutter/material.dart';
-import 'package:app_weight/weight/domain/entities/weights.dart';
+import 'package:app_weight/weight/domain/entities/weight.dart';
 
 class CardWeigth extends StatelessWidget {
   const CardWeigth({
@@ -9,7 +9,7 @@ class CardWeigth extends StatelessWidget {
     required this.icon,
     required this.color,
   });
-  final Weights weight;
+  final Weight weight;
   final IconData icon;
   final Color color;
 

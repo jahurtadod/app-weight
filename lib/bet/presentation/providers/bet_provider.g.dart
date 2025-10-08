@@ -198,3 +198,126 @@ final class BetAllProvider
 }
 
 String _$betAllHash() => r'd365680c57b1a4966aa73799d62993f38d4dd460';
+
+@ProviderFor(watchBetDetails)
+const watchBetDetailsProvider = WatchBetDetailsProvider._();
+
+final class WatchBetDetailsProvider
+    extends
+        $FunctionalProvider<WatchBetDetails, WatchBetDetails, WatchBetDetails>
+    with $Provider<WatchBetDetails> {
+  const WatchBetDetailsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'watchBetDetailsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$watchBetDetailsHash();
+
+  @$internal
+  @override
+  $ProviderElement<WatchBetDetails> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  WatchBetDetails create(Ref ref) {
+    return watchBetDetails(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(WatchBetDetails value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<WatchBetDetails>(value),
+    );
+  }
+}
+
+String _$watchBetDetailsHash() => r'b2d60a120153c343c0db283d758dde8429c0f683';
+
+@ProviderFor(betDetails)
+const betDetailsProvider = BetDetailsFamily._();
+
+final class BetDetailsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<BetDetails>,
+          BetDetails,
+          Stream<BetDetails>
+        >
+    with $FutureModifier<BetDetails>, $StreamProvider<BetDetails> {
+  const BetDetailsProvider._({
+    required BetDetailsFamily super.from,
+    required (String, {int? weightsLimit}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'betDetailsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$betDetailsHash();
+
+  @override
+  String toString() {
+    return r'betDetailsProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<BetDetails> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<BetDetails> create(Ref ref) {
+    final argument = this.argument as (String, {int? weightsLimit});
+    return betDetails(ref, argument.$1, weightsLimit: argument.weightsLimit);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is BetDetailsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$betDetailsHash() => r'a9e13a5ea9551e51304e9a114397196a08a5e52c';
+
+final class BetDetailsFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+          Stream<BetDetails>,
+          (String, {int? weightsLimit})
+        > {
+  const BetDetailsFamily._()
+    : super(
+        retry: null,
+        name: r'betDetailsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  BetDetailsProvider call(String betId, {int? weightsLimit}) =>
+      BetDetailsProvider._(
+        argument: (betId, weightsLimit: weightsLimit),
+        from: this,
+      );
+
+  @override
+  String toString() => r'betDetailsProvider';
+}

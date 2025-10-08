@@ -4,14 +4,14 @@
 
 // String personToJson(Person data) => json.encode(data.toJson());
 
-class Weights {
+class Weight {
     final String id;
     final String unit;
     final double weight;
     final double imc;
     final DateTime dateWeight;
 
-    Weights({
+    Weight({
         required this.id,
         required this.unit,
         required this.weight,
@@ -19,14 +19,14 @@ class Weights {
         required this.dateWeight,
     });
 
-    Weights copyWith({
+    Weight copyWith({
         String? id,
         String? unit,
         double? weight,
         double? imc,
         DateTime? dateWeight,
     }) => 
-        Weights(
+        Weight(
             id: id ?? this.id,
             unit: unit ?? this.unit,
             weight: weight ?? this.weight,

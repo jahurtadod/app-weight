@@ -22,7 +22,7 @@ ParticipantsRepository participantRepository(Ref ref) {
 }
 
 @riverpod
-Future<List<Participant>?> participantAll(Ref ref, String betId) async {
+Stream<List<Participant>?> participantAll(Ref ref, String betId) async* {
   final repo = ref.watch(participantRepositoryProvider);
-  return repo.getAllParticipants(betId);
+  yield* repo.getAllParticipants(betId);
 }

@@ -7,7 +7,7 @@ class ParticipantRepositoryImpl extends ParticipantsRepository {
   final ParticipantDatasource _datasource;
 
   @override
-  Future<List<ParticipantModel>> getAllParticipants(String betId) {
+  Stream<List<ParticipantModel>> getAllParticipants(String betId) {
     return _datasource.getAllParticipants(betId);
   }
   

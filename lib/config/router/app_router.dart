@@ -39,7 +39,7 @@ GoRouter goRouter(Ref ref) {
                 builder: (context, state) {
                   final bid = state.pathParameters['bid']!;
                   final bet = state.extra as Bet?; // opcional
-                  return BetDetailScreen(betId: bid, bet: bet);
+                  return BetDetailScreen(betId: bid);
                 },
               ),
             ],

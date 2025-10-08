@@ -27,6 +27,16 @@ class BetDatasourceImpl extends BetDatasource {
           .toList();
     });
   }
+  
+  @override
+  Stream<BetModel> watchById(String id) {
+    return _collection.doc(id).snapshots().map((snapshot) {
+      if (!snapshot.exists || snapshot.data() == null) {
+        throw Exception('Bet not found');
+      }
+      return BetModel.fromJson(snapshot.data()!, docId: snapshot.id);
+    });
+  }
 
   
 }

@@ -114,11 +114,11 @@ final class ParticipantAllProvider
         $FunctionalProvider<
           AsyncValue<List<Participant>?>,
           List<Participant>?,
-          FutureOr<List<Participant>?>
+          Stream<List<Participant>?>
         >
     with
         $FutureModifier<List<Participant>?>,
-        $FutureProvider<List<Participant>?> {
+        $StreamProvider<List<Participant>?> {
   const ParticipantAllProvider._({
     required ParticipantAllFamily super.from,
     required String super.argument,
@@ -142,12 +142,12 @@ final class ParticipantAllProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Participant>?> $createElement(
+  $StreamProviderElement<List<Participant>?> $createElement(
     $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  ) => $StreamProviderElement(pointer);
 
   @override
-  FutureOr<List<Participant>?> create(Ref ref) {
+  Stream<List<Participant>?> create(Ref ref) {
     final argument = this.argument as String;
     return participantAll(ref, argument);
   }
@@ -163,10 +163,10 @@ final class ParticipantAllProvider
   }
 }
 
-String _$participantAllHash() => r'bc2fbea9f67be74e9f8bb207367fc43a86b32dc7';
+String _$participantAllHash() => r'7e2209a869c01b21c81f67fe3162a37f6f14483b';
 
 final class ParticipantAllFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<List<Participant>?>, String> {
+    with $FunctionalFamilyOverride<Stream<List<Participant>?>, String> {
   const ParticipantAllFamily._()
     : super(
         retry: null,

@@ -2,7 +2,6 @@ enum ParticipantStatus { active, won, lost, left }
 
 class Participant {
   final String id;
-  final String userId;
   final String personId;
   final double initialWeight;
   final double? handicap;
@@ -11,7 +10,6 @@ class Participant {
 
   const Participant({
     required this.id,
-    required this.userId,
     required this.personId,
     required this.initialWeight,
     this.handicap,

@@ -10,7 +10,7 @@ class WeightsDatasourceImpl implements WeightsDatasource {
       _firestore.collection('person').doc(personId).collection('weights_entry');
 
   @override
-  Stream<List<WeightsModel?>> watchWeightsByPerson(
+  Stream<List<WeightsModel>> watchWeightsByPerson(
     String personId, {
     int? limit,
   }) {

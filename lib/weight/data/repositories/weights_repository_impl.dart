@@ -7,7 +7,7 @@ class WeightsRepositoryImpl implements WeightsRepository {
   final WeightsDatasource _datasource;
 
   @override
-  Stream<List<WeightsModel?>> watchWeightsByPerson(
+  Stream<List<WeightsModel>> watchWeightsByPerson(
     String personId, {
     int? limit,
   }) {

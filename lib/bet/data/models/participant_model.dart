@@ -3,7 +3,6 @@ import 'package:app_weight/bet/domain/entities/participants.dart';
 class ParticipantModel extends Participant {
   ParticipantModel({
     required super.id,
-    required super.userId,
     required super.personId,
     required super.initialWeight,
     required super.status,
@@ -14,7 +13,6 @@ class ParticipantModel extends Participant {
     String? docId,
   }) => ParticipantModel(
     id: (json["id"] as String?) ?? docId ?? "",
-    userId: json['userId'],
     personId: json['personId'],
     initialWeight: json['initialWeight'],
     status: ParticipantStatusX.fromStorage(json['status']),
@@ -23,7 +21,6 @@ class ParticipantModel extends Participant {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'userId': userId,
       'personId': personId,
       'initialWeight': initialWeight,
       'status': status,
@@ -33,7 +30,6 @@ class ParticipantModel extends Participant {
   toEntity() {
     return Participant(
       id: id,
-      userId: userId,
       personId: personId,
       initialWeight: initialWeight,
       status: status,

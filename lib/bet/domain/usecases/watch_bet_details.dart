@@ -1,18 +1,18 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:app_weight/bet/domain/entities/bet.dart';
+import 'package:app_weight/weight/domain/entities/person.dart';
 import 'package:app_weight/weight/domain/entities/weight.dart';
 
-class BetDetails {
-  final Bet bet;
-  final List<String> userIds;
-  final Map<String, List<Weight?>> weightsByUser;
-  final Map<String, double> initialWeightByUser;
+part 'watch_bet_details.freezed.dart';
 
-  const BetDetails({
-    required this.userIds, 
-    required this.bet,
-    required this.weightsByUser,
-    required this.initialWeightByUser,
-  });
+@freezed
+abstract class BetDetails with _$BetDetails {
+  const factory BetDetails({
+    required Bet bet,
+    required List<String> participantIds,
+    @Default(<String, List<Weight>>{}) Map<String, List<Weight>> weightsByUser,
+    @Default(<String, Person>{}) Map<String, Person> personsByParticipant,
+  }) = _BetDetails;
 }
 
 abstract class WatchBetDetails {

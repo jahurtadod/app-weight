@@ -25,65 +25,85 @@ class WatchBetDetailsImpl implements WatchBetDetails {
     final bet$ = betRepo.watchById(betId);
     final participants$ = participantsRepo.getAllParticipants(betId);
 
-    // combina stream bet + participants
+    // Combina bet$ y participants$, luego para cada participante obtiene sus pesos e información de persona
     return Rx.combineLatest2(
       bet$,
       participants$,
       (bet, participants) => (bet, participants),
     ).switchMap<BetDetails>((tuple) {
-      final personIds = tuple.$2.map((p) => p.personId).toList();
-      if (personIds.isNotEmpty) {
+      final bet = tuple.$1;
+      final personIds =
+          tuple.$2.map((p) => p.personId).where((id) => id.isNotEmpty).toList()
+            ..sort();
+      // Si no hay personIds, retorna BetDetails con userIds vacío
+      if (!personIds.isNotEmpty) {
         return Stream.value(
           BetDetails(
-            bet: tuple.$1,
-            userIds: const [],
+            bet: bet,
+            participantIds: const [],
             weightsByUser: const {},
-            initialWeightByUser: const {},
+            personsByParticipant: const {},
           ),
         );
       }
-      // weightsStreams: Stream<MapEntry<String, List<Weight>>> por cada user
-
-      // personsStreams: Stream<MapEntry<String, double>> por cada user
+      // Optiene los pesos por persona
       final weights$ = personIds.map(
-        (uid) => weightRepo
-            .watchWeightsByPerson(
-              uid,
-              limit: weightsLimit,
-            ) // Stream<List<Weight>>
-            .map(
-              (list) => MapEntry(uid, list),
-            ), // MapEntry<String, List<Weight>>
+        (id) => weightRepo
+            .watchWeightsByPerson(id, limit: weightsLimit)
+            .map((list) => MapEntry(id, list)),
       );
 
+      // Optiene la información de persona con el id del participante
       final persons$ = personIds.map(
-        (uid) => personRepo
-            .watchPersonById(uid) // Stream<Person?>
-            .map(
-              (p) => MapEntry(uid, p?.initialWeight ?? 0.0),
-            ), // MapEntry<String, double>
+        (id) => personRepo
+            .watchPersonById(id)
+            // controlamos el caso nulo
+            .where((list) => list != null)
+            .map((list) => MapEntry(id, list!)),
       );
 
+      // Combina todos los streams de pesos y personas
       final combinedWeights$ =
-          Rx.combineLatestList<MapEntry<String, List<Weight?>>>(weights$);
-      final combinedPersons$ = Rx.combineLatestList<MapEntry<String, double>>(
-        persons$,
-      );
+          Rx.combineLatestList<MapEntry<String, List<Weight>>>(
+            weights$,
+          ).map<Map<String, List<Weight>>>(
+            (entries) => {for (final e in entries) e.key: e.value},
+          );
 
-      return Rx.combineLatest2(combinedWeights$, combinedPersons$, (ws, ps) {
-        final weightsByUser = <String, List<Weight?>>{
-          for (final e in ws) e.key: e.value,
-        };
-        final initialByUser = <String, double>{
-          for (final e in ps) e.key: e.value,
-        };
-        return BetDetails(
-          bet: tuple.$1,
-          userIds: personIds,
+      final combinedPersons$ =
+          Rx.combineLatestList<MapEntry<String, Person>>(
+            persons$,
+          ).map<Map<String, Person>>(
+            (entries) => {for (final e in entries) e.key: e.value},
+          );
+
+      return Rx.combineLatest2(
+        combinedWeights$,
+        combinedPersons$,
+        (weightsByUser, personsByParticipant) => BetDetails(
+          bet: bet,
+          participantIds: personIds,
           weightsByUser: weightsByUser,
-          initialWeightByUser: initialByUser,
-        );
-      });
+          personsByParticipant: personsByParticipant,
+        ),
+      ).distinct(
+        (a, b) =>
+            identical(a, b) ||
+            (a.bet.id == b.bet.id &&
+                _mapEq(a.weightsByUser, b.weightsByUser) &&
+                _mapEq(a.personsByParticipant, b.personsByParticipant)),
+      );
     });
+  }
+
+  // Helper de igualdad
+  bool _mapEq<K, V>(Map<K, V> a, Map<K, V> b) {
+    if (identical(a, b)) return true;
+    if (a.length != b.length) return false;
+    for (final k in a.keys) {
+      if (!b.containsKey(k)) return false;
+      if (a[k] != b[k]) return false;
+    }
+    return true;
   }
 }

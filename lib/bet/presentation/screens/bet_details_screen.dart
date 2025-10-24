@@ -10,31 +10,35 @@ class BetDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final details = ref.watch(betDetailsProvider(betId, weightsLimit: 10));
+    final asyncDetDetails = ref.watch(
+      betDetailsProvider(betId, weightsLimit: 10),
+    );
 
-    return details.when(
+    return asyncDetDetails.when(
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (e, _) => Scaffold(body: Center(child: Text('Error: $e'))),
       data: (d) {
         final bet = d.bet;
-        final users = d.userIds;
+        final users = d.participantIds;
+
+        print(d);
 
         return Scaffold(
-          appBar: AppBar(title: Text(bet.title)),
-          body: ListView.separated(
-            padding: const EdgeInsets.all(16),
-            separatorBuilder: (_, __) => const SizedBox(height: 12),
-            itemCount: users.length,
-            itemBuilder: (context, i) {
-              final uid = users[i];
-              final data = (d.weightsByUser[uid] ?? const <Weight>[])
-                  .whereType<Weight>()
-                  .toList();
-
-              final initW = d.initialWeightByUser[uid] ?? 0.0;
-
-              return WeightListView(data: data, initialWeight: initW);
+          appBar: AppBar(title: const Text('Bet details')),
+          body: asyncDetDetails.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, st) => Center(child: Text('Error: $e')),
+            data: (details) {
+              // details.bet, details.userIds, details.weightsByUser, details.initialWeightByUser
+              return ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Text('Apuesta: ${details.bet.id}'),
+                  Text('Participantes: ${details.participantIds.length}'),
+                  // pinta lo que necesites...
+                ],
+              );
             },
           ),
         );

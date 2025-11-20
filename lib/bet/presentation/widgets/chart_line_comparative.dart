@@ -87,7 +87,7 @@ class ChartLineComparative extends StatelessWidget {
       elevation: 8,
       clipBehavior: Clip.antiAlias,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(32),
         child: Column(
           children: [
             Wrap(
@@ -116,89 +116,86 @@ class ChartLineComparative extends StatelessWidget {
             const SizedBox(height: 16),
 
             Flexible(
-              child: AspectRatio(
-                aspectRatio: 2,
-                child: LineChart(
-                  LineChartData(
-                    lineTouchData: LineTouchData(enabled: false),
-                    minX: -2,
-                    maxX: totalDays + 0.5,
-                    minY: minY,
-                    maxY: maxY,
-                    lineBarsData: lineBars,
-                    gridData: FlGridData(
-                      show: true,
-                      drawVerticalLine: false,
-                      drawHorizontalLine: true,
+              child: LineChart(
+                LineChartData(
+                  lineTouchData: LineTouchData(enabled: false),
+                  minX: -2,
+                  maxX: totalDays + 0.5,
+                  minY: minY,
+                  maxY: maxY,
+                  lineBarsData: lineBars,
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    drawHorizontalLine: true,
+                  ),
+                  borderData: FlBorderData(
+                    show: true,
+                    border: const Border(
+                      left: BorderSide(color: Colors.black, width: 2),
+                      bottom: BorderSide(color: Colors.black, width: 2),
+                      right: BorderSide(color: Colors.transparent),
+                      top: BorderSide(color: Colors.transparent),
                     ),
-                    borderData: FlBorderData(
-                      show: true,
-                      border: const Border(
-                        left: BorderSide(color: Colors.black, width: 2),
-                        bottom: BorderSide(color: Colors.black, width: 2),
-                        right: BorderSide(color: Colors.transparent),
-                        top: BorderSide(color: Colors.transparent),
+                  ),
+                  titlesData: FlTitlesData(
+                    rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 40,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          // Mostramos solo si es entero real
+                          if ((value - value.round()).abs() > 0.01) {
+                            return const SizedBox.shrink();
+                          }
+
+                          // Si está fuera del rango lindo → no mostrar
+                          if (value < minY || value > maxY) {
+                            return const SizedBox.shrink();
+                          }
+
+                          return Text(
+                            value.round().toString(),
+                            style: const TextStyle(fontSize: 10),
+                          );
+                        },
                       ),
                     ),
-                    titlesData: FlTitlesData(
-                      rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 40,
-                          interval: 1,
-                          getTitlesWidget: (value, meta) {
-                            // Mostramos solo si es entero real
-                            if ((value - value.round()).abs() > 0.01) {
-                              return const SizedBox.shrink();
-                            }
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        interval: step.toDouble(),
+                        getTitlesWidget: (value, meta) {
+                          final dayIndex = value.toInt();
 
-                            // Si está fuera del rango lindo → no mostrar
-                            if (value < minY || value > maxY) {
-                              return const SizedBox.shrink();
-                            }
+                          if (dayIndex < 0 || dayIndex > totalDays.toInt()) {
+                            return const SizedBox.shrink();
+                          }
 
-                            return Text(
-                              value.round().toString(),
+                          // Evitar labels intermedias
+                          if (dayIndex % step != 0) {
+                            return const SizedBox.shrink();
+                          }
+
+                          final date = chartStartDate.add(
+                            Duration(days: dayIndex),
+                          );
+
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              '${date.day}/${date.month}',
                               style: const TextStyle(fontSize: 10),
-                            );
-                          },
-                        ),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          interval: step.toDouble(),
-                          getTitlesWidget: (value, meta) {
-                            final dayIndex = value.toInt();
-
-                            if (dayIndex < 0 || dayIndex > totalDays.toInt()) {
-                              return const SizedBox.shrink();
-                            }
-
-                            // Evitar labels intermedias
-                            if (dayIndex % step != 0) {
-                              return const SizedBox.shrink();
-                            }
-
-                            final date = chartStartDate.add(
-                              Duration(days: dayIndex),
-                            );
-
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                '${date.day}/${date.month}',
-                                style: const TextStyle(fontSize: 10),
-                              ),
-                            );
-                          },
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

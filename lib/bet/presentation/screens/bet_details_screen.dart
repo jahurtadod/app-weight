@@ -31,59 +31,114 @@ class BetDetailScreen extends ConsumerWidget {
 
         return Scaffold(
           appBar: AppBar(title: Text(bet.title)),
-          body: ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              Text('Finaliza el: $dateEndBet'),
-              Text('Apuesta: \$ ${details.bet.stakeValue}'),
-              const SizedBox(height: 16),
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              final width = constraints.maxWidth;
+              final isWide = width > 900; 
 
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              if (isWide) {
+                return ListView(
+                padding: const EdgeInsets.all(16),
                 children: [
-                  ...particpants.map<Widget>((participant) {
-                    final person = participant.person;
-                    final weights = participant.weights;
-
-                    // rakingsitems.addAll(RankingItem(name: person.name, realLoss: person.initialWeight, handicap: ));
-
-                    return Expanded(
-                      child: Column(
-                        children: [
-                          CardPerson(person: person),
-                          const SizedBox(height: 8),
-                          GridWeights(
-                            person: person,
-                            weights: weights,
+                  Text('Finaliza el: $dateEndBet'),
+                  Text('Apuesta: \$ ${details.bet.stakeValue}'),
+                  const SizedBox(height: 16),
+              
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...particpants.map<Widget>((participant) {
+                        final person = participant.person;
+                        final weights = participant.weights;
+              
+                        // rakingsitems.addAll(RankingItem(name: person.name, realLoss: person.initialWeight, handicap: ));
+              
+                        return Expanded(
+                          child: Column(
+                            children: [
+                              CardPerson(person: person),
+                              const SizedBox(height: 8),
+                              GridWeights(
+                                person: person,
+                                weights: weights,
+                              ),
+                            ],
                           ),
-                        ],
+                        );
+                      }),
+                      Expanded(
+                        flex: 2,
+                        child: Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: 16 / 9,
+                              // width: double.infinity,
+                              child: ChartLineComparative(
+                                seriesByUser: particpants,
+                              ),
+                            ),
+                            AspectRatio(
+                               aspectRatio: 2 / 1,
+                              child: RankingWithHandicapChart(
+                                items: particpants,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    );
-                  }),
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 375,
-                          width: double.infinity,
-                          child: ChartLineComparative(
-                            seriesByUser: particpants,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 250,
-                          width: double.infinity,
-                          child: RankingWithHandicapChart(
-                            items: particpants,
-                          ),
-                        ),
-                      ],
-                    ),
+                    ],
                   ),
                 ],
-              ),
-            ],
+              ); 
+              } else {
+                // 📱 Layout para móvil (todo en columna)
+                return ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    // Participantes uno debajo del otro
+                    ...particpants.map<Widget>((participant) {
+                      final person = participant.person;
+                      final weights = participant.weights;
+
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: Column(
+                          children: [
+                            CardPerson(person: person),
+                            const SizedBox(height: 8),
+                            GridWeights(
+                              person: person,
+                              weights: weights,
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+
+                    const SizedBox(height: 16),
+
+                    // Gráfica de líneas
+                    SizedBox(
+                      height: 300,
+                      child: ChartLineComparative(
+                        seriesByUser: particpants
+    ,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Ranking
+                    SizedBox(
+                      height: 250,
+                      child: RankingWithHandicapChart(
+                        items: particpants,
+                      ),
+                    ),
+                  ],
+                );
+              }
+            },
+            
           ),
         );
       },

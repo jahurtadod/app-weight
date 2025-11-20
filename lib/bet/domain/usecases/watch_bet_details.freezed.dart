@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BetDetails {
 
- Bet get bet; List<String> get participantIds; Map<String, List<Weight>> get weightsByUser; Map<String, Person> get personsByParticipant;
+ Bet get bet; List<ParticipantWithPersonAndWeights> get participants;
 /// Create a copy of BetDetails
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BetDetailsCopyWith<BetDetails> get copyWith => _$BetDetailsCopyWithImpl<BetDeta
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BetDetails&&(identical(other.bet, bet) || other.bet == bet)&&const DeepCollectionEquality().equals(other.participantIds, participantIds)&&const DeepCollectionEquality().equals(other.weightsByUser, weightsByUser)&&const DeepCollectionEquality().equals(other.personsByParticipant, personsByParticipant));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BetDetails&&(identical(other.bet, bet) || other.bet == bet)&&const DeepCollectionEquality().equals(other.participants, participants));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bet,const DeepCollectionEquality().hash(participantIds),const DeepCollectionEquality().hash(weightsByUser),const DeepCollectionEquality().hash(personsByParticipant));
+int get hashCode => Object.hash(runtimeType,bet,const DeepCollectionEquality().hash(participants));
 
 @override
 String toString() {
-  return 'BetDetails(bet: $bet, participantIds: $participantIds, weightsByUser: $weightsByUser, personsByParticipant: $personsByParticipant)';
+  return 'BetDetails(bet: $bet, participants: $participants)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BetDetailsCopyWith<$Res>  {
   factory $BetDetailsCopyWith(BetDetails value, $Res Function(BetDetails) _then) = _$BetDetailsCopyWithImpl;
 @useResult
 $Res call({
- Bet bet, List<String> participantIds, Map<String, List<Weight>> weightsByUser, Map<String, Person> personsByParticipant
+ Bet bet, List<ParticipantWithPersonAndWeights> participants
 });
 
 
@@ -62,13 +62,11 @@ class _$BetDetailsCopyWithImpl<$Res>
 
 /// Create a copy of BetDetails
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? bet = null,Object? participantIds = null,Object? weightsByUser = null,Object? personsByParticipant = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? bet = null,Object? participants = null,}) {
   return _then(_self.copyWith(
 bet: null == bet ? _self.bet : bet // ignore: cast_nullable_to_non_nullable
-as Bet,participantIds: null == participantIds ? _self.participantIds : participantIds // ignore: cast_nullable_to_non_nullable
-as List<String>,weightsByUser: null == weightsByUser ? _self.weightsByUser : weightsByUser // ignore: cast_nullable_to_non_nullable
-as Map<String, List<Weight>>,personsByParticipant: null == personsByParticipant ? _self.personsByParticipant : personsByParticipant // ignore: cast_nullable_to_non_nullable
-as Map<String, Person>,
+as Bet,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
+as List<ParticipantWithPersonAndWeights>,
   ));
 }
 
@@ -153,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Bet bet,  List<String> participantIds,  Map<String, List<Weight>> weightsByUser,  Map<String, Person> personsByParticipant)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Bet bet,  List<ParticipantWithPersonAndWeights> participants)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BetDetails() when $default != null:
-return $default(_that.bet,_that.participantIds,_that.weightsByUser,_that.personsByParticipant);case _:
+return $default(_that.bet,_that.participants);case _:
   return orElse();
 
 }
@@ -174,10 +172,10 @@ return $default(_that.bet,_that.participantIds,_that.weightsByUser,_that.persons
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Bet bet,  List<String> participantIds,  Map<String, List<Weight>> weightsByUser,  Map<String, Person> personsByParticipant)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Bet bet,  List<ParticipantWithPersonAndWeights> participants)  $default,) {final _that = this;
 switch (_that) {
 case _BetDetails():
-return $default(_that.bet,_that.participantIds,_that.weightsByUser,_that.personsByParticipant);case _:
+return $default(_that.bet,_that.participants);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +192,10 @@ return $default(_that.bet,_that.participantIds,_that.weightsByUser,_that.persons
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Bet bet,  List<String> participantIds,  Map<String, List<Weight>> weightsByUser,  Map<String, Person> personsByParticipant)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Bet bet,  List<ParticipantWithPersonAndWeights> participants)?  $default,) {final _that = this;
 switch (_that) {
 case _BetDetails() when $default != null:
-return $default(_that.bet,_that.participantIds,_that.weightsByUser,_that.personsByParticipant);case _:
+return $default(_that.bet,_that.participants);case _:
   return null;
 
 }
@@ -209,29 +207,15 @@ return $default(_that.bet,_that.participantIds,_that.weightsByUser,_that.persons
 
 
 class _BetDetails implements BetDetails {
-  const _BetDetails({required this.bet, required final  List<String> participantIds, final  Map<String, List<Weight>> weightsByUser = const <String, List<Weight>>{}, final  Map<String, Person> personsByParticipant = const <String, Person>{}}): _participantIds = participantIds,_weightsByUser = weightsByUser,_personsByParticipant = personsByParticipant;
+  const _BetDetails({required this.bet, required final  List<ParticipantWithPersonAndWeights> participants}): _participants = participants;
   
 
 @override final  Bet bet;
- final  List<String> _participantIds;
-@override List<String> get participantIds {
-  if (_participantIds is EqualUnmodifiableListView) return _participantIds;
+ final  List<ParticipantWithPersonAndWeights> _participants;
+@override List<ParticipantWithPersonAndWeights> get participants {
+  if (_participants is EqualUnmodifiableListView) return _participants;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_participantIds);
-}
-
- final  Map<String, List<Weight>> _weightsByUser;
-@override@JsonKey() Map<String, List<Weight>> get weightsByUser {
-  if (_weightsByUser is EqualUnmodifiableMapView) return _weightsByUser;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_weightsByUser);
-}
-
- final  Map<String, Person> _personsByParticipant;
-@override@JsonKey() Map<String, Person> get personsByParticipant {
-  if (_personsByParticipant is EqualUnmodifiableMapView) return _personsByParticipant;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_personsByParticipant);
+  return EqualUnmodifiableListView(_participants);
 }
 
 
@@ -245,16 +229,16 @@ _$BetDetailsCopyWith<_BetDetails> get copyWith => __$BetDetailsCopyWithImpl<_Bet
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BetDetails&&(identical(other.bet, bet) || other.bet == bet)&&const DeepCollectionEquality().equals(other._participantIds, _participantIds)&&const DeepCollectionEquality().equals(other._weightsByUser, _weightsByUser)&&const DeepCollectionEquality().equals(other._personsByParticipant, _personsByParticipant));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BetDetails&&(identical(other.bet, bet) || other.bet == bet)&&const DeepCollectionEquality().equals(other._participants, _participants));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,bet,const DeepCollectionEquality().hash(_participantIds),const DeepCollectionEquality().hash(_weightsByUser),const DeepCollectionEquality().hash(_personsByParticipant));
+int get hashCode => Object.hash(runtimeType,bet,const DeepCollectionEquality().hash(_participants));
 
 @override
 String toString() {
-  return 'BetDetails(bet: $bet, participantIds: $participantIds, weightsByUser: $weightsByUser, personsByParticipant: $personsByParticipant)';
+  return 'BetDetails(bet: $bet, participants: $participants)';
 }
 
 
@@ -265,7 +249,7 @@ abstract mixin class _$BetDetailsCopyWith<$Res> implements $BetDetailsCopyWith<$
   factory _$BetDetailsCopyWith(_BetDetails value, $Res Function(_BetDetails) _then) = __$BetDetailsCopyWithImpl;
 @override @useResult
 $Res call({
- Bet bet, List<String> participantIds, Map<String, List<Weight>> weightsByUser, Map<String, Person> personsByParticipant
+ Bet bet, List<ParticipantWithPersonAndWeights> participants
 });
 
 
@@ -282,13 +266,11 @@ class __$BetDetailsCopyWithImpl<$Res>
 
 /// Create a copy of BetDetails
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? bet = null,Object? participantIds = null,Object? weightsByUser = null,Object? personsByParticipant = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? bet = null,Object? participants = null,}) {
   return _then(_BetDetails(
 bet: null == bet ? _self.bet : bet // ignore: cast_nullable_to_non_nullable
-as Bet,participantIds: null == participantIds ? _self._participantIds : participantIds // ignore: cast_nullable_to_non_nullable
-as List<String>,weightsByUser: null == weightsByUser ? _self._weightsByUser : weightsByUser // ignore: cast_nullable_to_non_nullable
-as Map<String, List<Weight>>,personsByParticipant: null == personsByParticipant ? _self._personsByParticipant : personsByParticipant // ignore: cast_nullable_to_non_nullable
-as Map<String, Person>,
+as Bet,participants: null == participants ? _self._participants : participants // ignore: cast_nullable_to_non_nullable
+as List<ParticipantWithPersonAndWeights>,
   ));
 }
 

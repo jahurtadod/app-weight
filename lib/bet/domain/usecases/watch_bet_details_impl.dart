@@ -1,3 +1,4 @@
+import 'package:app_weight/bet/domain/usecases/participant_person.dart';
 import 'package:app_weight/bet/domain/repositories/bet_repository.dart';
 import 'package:app_weight/bet/domain/repositories/participants_repository.dart';
 import 'package:app_weight/bet/domain/usecases/watch_bet_details.dart';
@@ -32,78 +33,132 @@ class WatchBetDetailsImpl implements WatchBetDetails {
       (bet, participants) => (bet, participants),
     ).switchMap<BetDetails>((tuple) {
       final bet = tuple.$1;
-      final personIds =
-          tuple.$2.map((p) => p.personId).where((id) => id.isNotEmpty).toList()
-            ..sort();
-      // Si no hay personIds, retorna BetDetails con userIds vacío
-      if (!personIds.isNotEmpty) {
+      final participants = List.of(tuple.$2)
+        ..removeWhere((p) => p.personId.isEmpty)
+        ..sort((a, b) => a.personId.compareTo(b.personId));
+
+      if (participants.isEmpty) {
         return Stream.value(
           BetDetails(
             bet: bet,
-            participantIds: const [],
-            weightsByUser: const {},
-            personsByParticipant: const {},
+            // participantIds: const [],
+            // weightsByUser: const {},
+            // personsByParticipant: const {},
+            participants: const [],
           ),
         );
       }
       // Optiene los pesos por persona
-      final weights$ = personIds.map(
-        (id) => weightRepo
-            .watchWeightsByPerson(id, limit: weightsLimit)
-            .map((list) => MapEntry(id, list)),
+      final weights$ = participants.map(
+        (participant) => weightRepo
+            .watchWeightsByPerson(
+              participant.personId,
+              limit: weightsLimit,
+              beforeDate: bet.endDate,
+              afterDate: bet.startDate,
+            )
+            .map((list) => MapEntry(participant.personId, list)),
       );
 
       // Optiene la información de persona con el id del participante
-      final persons$ = personIds.map(
-        (id) => personRepo
-            .watchPersonById(id)
-            // controlamos el caso nulo
-            .where((list) => list != null)
-            .map((list) => MapEntry(id, list!)),
+      final persons$ = participants.map(
+        (participant) => personRepo
+            .watchPersonById(participant.personId)
+            .where((p) => p != null)
+            .map((p) => MapEntry(participant.personId, p!)),
       );
 
-      // Combina todos los streams de pesos y personas
-      final combinedWeights$ =
+      final weightsByUser$ =
           Rx.combineLatestList<MapEntry<String, List<Weight>>>(
             weights$,
           ).map<Map<String, List<Weight>>>(
             (entries) => {for (final e in entries) e.key: e.value},
           );
 
-      final combinedPersons$ =
+      final personsByUser$ =
           Rx.combineLatestList<MapEntry<String, Person>>(
             persons$,
           ).map<Map<String, Person>>(
             (entries) => {for (final e in entries) e.key: e.value},
           );
 
-      return Rx.combineLatest2(
-        combinedWeights$,
-        combinedPersons$,
-        (weightsByUser, personsByParticipant) => BetDetails(
-          bet: bet,
-          participantIds: personIds,
-          weightsByUser: weightsByUser,
-          personsByParticipant: personsByParticipant,
-        ),
-      ).distinct(
-        (a, b) =>
-            identical(a, b) ||
-            (a.bet.id == b.bet.id &&
-                _mapEq(a.weightsByUser, b.weightsByUser) &&
-                _mapEq(a.personsByParticipant, b.personsByParticipant)),
-      );
+      // final combinedWeights$ =
+      //     Rx.combineLatestList<MapEntry<Participant, List<Weight>>>(
+      //       weights$,
+      //     ).map<Map<Participant, List<Weight>>>(
+      //       (entries) => {for (final e in entries) e.key: e.value},
+      //     );
+
+      // final combinedPersons$ =
+      //     Rx.combineLatestList<MapEntry<ParticipantWithPerson, Person>>(
+      //       persons$,
+      //     ).map<Map<String, Person>>(
+      //       (entries) => {for (final e in entries) e.key: e.value},
+      //     );
+
+      //   return Rx.combineLatest2(
+      //     combinedWeights$,
+      //     combinedPersons$,
+      //     (weightsByUser, personsByParticipant) => BetDetails(
+      //       bet: bet,
+      //       participantIds: participants,
+      //       weightsByUser: weightsByUser,
+      //       personsByParticipant: personsByParticipant,
+      //     ),
+      //   ).distinct(
+      //     (a, b) =>
+      //         identical(a, b) ||
+      //         (a.bet.id == b.bet.id &&
+      //             _mapEq(a.weightsByUser, b.weightsByUser) &&
+      //             _mapEq(a.personsByParticipant, b.personsByParticipant)),
+      //   );
+      // });
+      return Rx.combineLatest2<
+        Map<String, List<Weight>>,
+        Map<String, Person>,
+        BetDetails
+      >(weightsByUser$, personsByUser$, (weightsByUser, personsByUser) {
+        final participantsWithAll = participants
+            .map<ParticipantWithPersonAndWeights?>((p) {
+              final person = personsByUser[p.personId];
+              if (person == null) return null;
+
+              final weights = weightsByUser[p.personId] ?? const <Weight>[];
+
+              return ParticipantWithPersonAndWeights(
+                participant: p,
+                person: person,
+                weights: weights,
+              );
+            })
+            .whereType<ParticipantWithPersonAndWeights>()
+            .toList();
+
+        // print("⚡ BetDetails emitido a las ${DateTime.now()}");
+
+        return BetDetails(bet: bet, participants: participantsWithAll);
+      });
     });
   }
 
   // Helper de igualdad
-  bool _mapEq<K, V>(Map<K, V> a, Map<K, V> b) {
-    if (identical(a, b)) return true;
-    if (a.length != b.length) return false;
-    for (final k in a.keys) {
-      if (!b.containsKey(k)) return false;
-      if (a[k] != b[k]) return false;
-    }
-    return true;
-  }
+  // bool _mapEq<K, V>(Map<K, V> a, Map<K, V> b) {
+  //   if (identical(a, b)) return true;
+  //   if (a.length != b.length) return false;
+  //   for (final k in a.keys) {
+  //     if (!b.containsKey(k)) return false;
+  //     if (a[k] != b[k]) return false;
+  //   }
+  //   return true;
+  // }
+
+  // Helper con listas
+  // bool _listEq<T>(List<T> a, List<T> b) {
+  //   if (identical(a, b)) return true;
+  //   if (a.length != b.length) return false;
+  //   for (int i = 0; i < a.length; i++) {
+  //     if (a[i] != b[i]) return false;
+  //   }
+  //   return true;
+  // }
 }

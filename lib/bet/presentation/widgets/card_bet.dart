@@ -29,7 +29,19 @@ class CardBet extends StatelessWidget {
             children: [
               Text(bet.title),
               const SizedBox(height: 8),
-              Text('bet.description'),
+              Chip(
+                label: Text(
+                  bet.status == BetStatus.active ? 'Activa' : 'Finalizada',
+                  style: const TextStyle(fontSize: 10), // texto pequeño
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: const VisualDensity(
+                  horizontal: -4,
+                  vertical: -4,
+                ),
+                shape: const StadiumBorder(),
+              ),
             ],
           ),
         ),

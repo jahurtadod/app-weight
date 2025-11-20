@@ -6,6 +6,7 @@ class ParticipantModel extends Participant {
     required super.personId,
     required super.initialWeight,
     required super.status,
+    required super.handicap,
   });
 
   factory ParticipantModel.fromJson(
@@ -16,6 +17,7 @@ class ParticipantModel extends Participant {
     personId: json['personId'],
     initialWeight: json['initialWeight'],
     status: ParticipantStatusX.fromStorage(json['status']),
+    handicap: (json['handicap'] as num?)?.toDouble() ?? 0.0,
   );
 
   Map<String, dynamic> toJson() {

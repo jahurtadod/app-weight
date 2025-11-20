@@ -13,8 +13,12 @@ class WeightsDatasourceImpl implements WeightsDatasource {
   Stream<List<WeightsModel>> watchWeightsByPerson(
     String personId, {
     int? limit,
+    DateTime? beforeDate,
+    DateTime? afterDate,
   }) {
-    return _buildQuery(personId, limit).snapshots().map((snapshot) {
+    return _buildQuery(personId, limit, beforeDate, afterDate).snapshots().map((
+      snapshot,
+    ) {
       if (snapshot.docs.isEmpty) return [];
 
       return snapshot.docs
@@ -28,8 +32,27 @@ class WeightsDatasourceImpl implements WeightsDatasource {
     });
   }
 
-  Query _buildQuery(String personId, int? limit) {
+  Query _buildQuery(
+    String personId,
+    int? limit,
+    DateTime? beforeDate,
+    DateTime? afterDate,
+  ) {
     var query = _collection(personId).orderBy('dateWeight', descending: true);
+
+    if (beforeDate != null) {
+      query = query.where(
+        'dateWeight',
+        isLessThan: Timestamp.fromDate(beforeDate),
+      );
+    }
+
+    if (afterDate != null) {
+      query = query.where(
+        'dateWeight',
+        isGreaterThan: Timestamp.fromDate(afterDate),
+      );
+    }
     if (limit != null) query = query.limit(limit);
     return query;
   }

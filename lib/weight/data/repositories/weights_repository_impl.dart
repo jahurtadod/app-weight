@@ -10,7 +10,9 @@ class WeightsRepositoryImpl implements WeightsRepository {
   Stream<List<WeightsModel>> watchWeightsByPerson(
     String personId, {
     int? limit,
+    DateTime? beforeDate,
+    DateTime? afterDate,
   }) {
-    return _datasource.watchWeightsByPerson(personId, limit: limit);
+    return _datasource.watchWeightsByPerson(personId, limit: limit, beforeDate: beforeDate, afterDate: afterDate);
   }
 }

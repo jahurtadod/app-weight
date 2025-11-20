@@ -25,6 +25,7 @@ class MyApp extends ConsumerWidget {
       title: 'App Weight',
       theme: AppTheme(isDarkmode: true).getTheme(),
       debugShowCheckedModeBanner: false,
+      showPerformanceOverlay: true,
       routerConfig: goRouter,
     );
   }

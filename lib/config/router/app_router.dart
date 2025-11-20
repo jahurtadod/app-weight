@@ -1,4 +1,3 @@
-import 'package:app_weight/bet/domain/entities/bet.dart';
 import 'package:app_weight/bet/presentation/screens/bet_details_screen.dart';
 import 'package:app_weight/user/presentation/widgets/icon_auth.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +37,6 @@ GoRouter goRouter(Ref ref) {
                 name: AppRoute.bet.name,
                 builder: (context, state) {
                   final bid = state.pathParameters['bid']!;
-                  final bet = state.extra as Bet?; // opcional
                   return BetDetailScreen(betId: bid);
                 },
               ),

@@ -21,7 +21,46 @@ GoRouter goRouter(Ref ref) {
       ShellRoute(
         builder: (context, state, child) {
           return Scaffold(
-            appBar: AppBar(title: const Text('VERSUS'), actions: [IconAuth()]),
+            appBar: AppBar(
+              title: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Image.asset(
+                      'assets/icon/icon_3.png',
+                      height: 40,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+
+                  Text(
+                    'PariX',
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+
+                  Text(
+                    'Your bet. Your game.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: 0.7),
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [IconAuth()],
+            ),
             body: child,
           );
         },

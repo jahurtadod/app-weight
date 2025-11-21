@@ -22,10 +22,8 @@ class MyApp extends ConsumerWidget {
     final goRouter = ref.watch(goRouterProvider);
 
     return MaterialApp.router(
-      title: 'App Weight',
+      title: 'PariX',
       theme: AppTheme(isDarkmode: true).getTheme(),
-      debugShowCheckedModeBanner: false,
-      showPerformanceOverlay: true,
       routerConfig: goRouter,
     );
   }

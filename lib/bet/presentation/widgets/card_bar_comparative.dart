@@ -166,17 +166,12 @@ class RankingWithHandicapChart extends StatelessWidget {
                   gridData: FlGridData(
                     show: true,
                     drawVerticalLine: false,
-
-                    // Solo pintar líneas horizontales
                     checkToShowHorizontalLine: (value) => true,
 
                     getDrawingHorizontalLine: (value) {
-                      // 🔥 Línea especial cuando value == 0
                       if (value == 0) {
                         return const FlLine(color: Colors.grey, strokeWidth: 2);
                       }
-
-                      // Otras líneas normales
                       return FlLine(
                         color: Colors.grey.withValues(alpha: 0.3),
                         strokeWidth: 1,
@@ -213,6 +208,7 @@ class RankingWithHandicapChart extends StatelessWidget {
                               Colors.green,
                             ),
                           ],
+                          borderRadius: BorderRadius.zero,
                         ),
                       ],
                     );

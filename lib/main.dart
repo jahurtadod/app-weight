@@ -25,6 +25,7 @@ class MyApp extends ConsumerWidget {
       title: 'PariX',
       theme: AppTheme(isDarkmode: true).getTheme(),
       routerConfig: goRouter,
+      debugShowCheckedModeBanner: false,
     );
   }
 }
